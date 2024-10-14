@@ -2,6 +2,7 @@ package com.avyrodov.bugTracker.web.issue;
 
 import com.avyrodov.bugTracker.entity.Comment;
 import com.avyrodov.bugTracker.entity.Issue;
+import com.avyrodov.bugTracker.entity.Status;
 import com.avyrodov.bugTracker.service.ICommentService;
 import com.avyrodov.bugTracker.service.IIssueService;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class IssueEditController {
@@ -47,12 +50,12 @@ public class IssueEditController {
 
     @PostMapping("/issue/comment/add")
     public String addComment(Comment comment, Model model) {
-        if(comment != null) {
+        if (comment != null) {
             comment.setUpdateDate(LocalDateTime.now());
 
             Issue issue = comment.getIssue();
 
-            if(issue != null) {
+            if (issue != null) {
                 issue.getComments().add(comment);
                 issue.setStatus(comment.getStatus());
                 issueService.save(issue);
@@ -60,6 +63,27 @@ public class IssueEditController {
             }
         }
 
+        return "issue/block/comments :: comments";
+    }
+
+    @PostMapping("/issue/comment/delete")
+    public String deleteComment(@RequestParam(required = false) Long issueId,
+                                @RequestParam(required = false) Long commentId,
+                                Model model) {
+        Issue issue = issueService.getIssue(issueId);
+        Comment comment = commentService.getComment(commentId);
+
+        commentService.delete(comment);
+
+        Status status = commentService.getLastCommentStatus(issueId);
+        issue.setStatus(status != null ? status : Status.CREATED);
+
+        issue = issueService.save(issue);
+
+        List<Comment> comments = commentService.getComments(issueId);
+        issue.setComments(comments);
+
+        model.addAttribute("command", issue);
         return "issue/block/comments :: comments";
     }
 }

@@ -3,7 +3,7 @@
         <div class="row">
             <b><span th:text="#{issue.comments}"></span>:</b>
         </div>
-        <div class="row">
+        <div class="row" th:with="userId=${T(com.avyrodov.bugTracker.web.utils.UserPrincipalHolder).getUserId()}">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item message_not_found" th:if="${command.comments.size == 0}">
                     <small class="text-muted">No comments</small>
@@ -16,7 +16,7 @@
                             <span th:text="${comment.text}"></span>
                         </p>
                     </div>
-                    <i class='bx bxs-trash-alt trash'></i>
+                    <i class='bx bxs-trash-alt trash' th:attr="data-id=${comment.commentId}" th:if="${comment.author.userId == userId}"></i>
                 </li>
             </ul>
         </div>
