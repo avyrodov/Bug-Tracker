@@ -1,0 +1,32 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary mb-2" th:fragment="menu">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" th:aria-label="#{label.navigationSwitch}">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{issue}"></a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" th:href="@{/issue/issues.html}" th:text="#{issues}"></a></li>
+                        <li><a class="dropdown-item" th:href="@{/issue/create.html}" th:text="#{issue.create}"></a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="dropdown" sec:authorize="!isAuthenticated()">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{button.signInSignUp}"></button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" th:href="@{/auth/login.html}" th:text="#{button.signin}"></a></li>
+                    <li><a class="dropdown-item" th:href="@{/auth/registration.html}" th:text="#{button.signup}"></a></li>
+                </ul>
+            </div>
+            <div class="dropdown" sec:authorize="isAuthenticated()">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" sec:authentication="principal.firstname"></button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" th:href="@{/logout}" th:text="#{button.logout}"></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header.html :: header(title='Bug Tracker - Registration')}"></head>
+
+<style>
+    html,
+    body {
+        height: 100%;
+    }
+
+    body {
+        padding: 0;
+    }
+
+    .wrap-login {
+        width: 100%;
+        min-height: 100vh;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .form-signin {
+        max-width: 500px;
+        padding: 3rem 2rem;
+        border-radius: 6px;
+        background-color: #fff;
+    }
+
+    .form-signin .form-floating:focus-within {
+        z-index: 2;
+    }
+
+    #username, #firstname, #surname {
+        margin-bottom: -1px;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    #username, #surname {
+        border-radius: 0;
+    }
+
+    #password {
+        margin-bottom: 10px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+
+    .btn {
+        height: auto;
+    }
+
+    .togglePassword {
+        font-size: 25px;
+        color: #ced4da;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .toggle {
+        border-top-right-radius: 0;
+    }
+
+    .toggle {
+        border-top-right-radius: 0;
+        height: 58px;
+    }
+
+    input {
+        height: 58px;
+    }
+</style>
+
+<script th:inline="javascript">
+    $(function () {
+        $(".togglePassword").on('click', function () {
+            $(this).toggleClass('bx-show-alt');
+            const input = $(this).attr('data-parent');
+            const password = $('#' + input);
+            const type = password.attr('type') === 'password' ? 'text' : 'password';
+            password.attr('type', type);
+        });
+    });
+</script>
+
+<body class="d-flex flex-column h-100 color_sub_bg">
+<div th:replace="~{fragments/menu.html :: menu}"></div>
+
+<div class="wrap-login">
+    <div class="form-signin card text-bg-light w-100 m-auto">
+        <row sec:authorize="isAuthenticated()">
+            <div class="alert alert-success" role="alert">
+                You have logged in
+            </div>
+        </row>
+        <div class="row mb-2" sec:authorize="!isAuthenticated()">
+            <div class="col-12 text-center" th:text="#{signup}"></div>
+        </div>
+        <form id="loginForm" th:action="@{/auth/registration.html}" th:object="${command}" method="post" sec:authorize="!isAuthenticated()">
+            <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert"></div>
+            <div class="form-floating">
+                <input type="text" class="form-control" th:field="${command.firstname}" placeholder="First Name">
+                <label th:for="firstname">First Name</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" class="form-control" th:field="${command.surname}" placeholder="Surname">
+                <label th:for="surname">Surname</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" class="form-control" th:field="${command.username}" placeholder="Username">
+                <label th:for="username">Username</label>
+            </div>
+            <div class="input-group mb-2">
+                <div class="form-floating">
+                    <input type="password" class="form-control mb-2" th:field="${command.password}" placeholder="Password">
+                    <label th:for="password">Password</label>
+                </div>
+                <div class="input-group-text pt-1 pb-1 ps-2 pe-2 toggle">
+                    <i class="bx bx-show-alt bx-hide togglePassword" role="button" data-parent="password"></i>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" type="submit">Login</button>
+        </form>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer.html :: footer}"></footer>
+</body>
+</html>

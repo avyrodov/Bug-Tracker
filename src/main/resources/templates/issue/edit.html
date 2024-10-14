@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header.html :: header(title='Bug Tracker - Issue Edit')}"></head>
+
+<body class="d-flex flex-column h-100 color_sub_bg">
+<div th:replace="~{fragments/menu.html :: menu}"></div>
+
+<script th:inline="javascript">
+    $(document).ready(function () {
+        $('#addComment').on('submit', function (e) {
+            e.preventDefault();
+            showNotice();
+            let timer = waitingTimeExpired(30000);
+
+            let formData = new FormData(event.target);
+            let obj = {};
+            formData.forEach((value, key) => obj[key] = value);
+
+            let url = $(this).attr('action');
+
+            $('#comments').load(url, obj, function () {
+                notice.hideLoading();
+                stopTimer(timer);
+                $('#addComment')[0].reset();
+                let status = [[ ${#strings.capitalize(#strings.toLowerCase(command.status.name()))}]];
+                $('#issue_status').html(status)
+            });
+        })
+    })
+</script>
+
+<style>
+    #comments {
+        overflow-y: auto;
+        max-height: 500px;
+    }
+</style>
+
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <b th:text="${command.name}"></b>
+                    </div>
+                </div>
+                <div class="row mb-5">
+                    <div class="col-12">
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <b th:text="#{issue.status}"></b>
+                            </div>
+                            <div id="issue_status" class="col-md-9" th:text="${#strings.capitalize(#strings.toLowerCase(command.status.name()))}"></div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <b th:text="#{issue.startDate}"></b>
+                            </div>
+                            <div class="col-md-9" th:text="${#temporals.format(command.startDate, 'MM/dd/yyyy HH:MM')}"></div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <b th:text="#{issue.author}"></b>
+                            </div>
+                            <div class="col-md-9" th:text="${command.author.getFullname()}"></div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <b th:text="#{issue.description}"></b>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12" th:text="${command.description}"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="comments" class="row">
+                            <div th:replace="~{issue/block/comments.html :: comments}"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <form id="addComment" th:action="@{/issue/comment/add}" th:object="${comment}" method="post">
+                            <input type="hidden" name="issue" th:value="${command.issueId}">
+                            <input type="hidden" name="author" th:value="${T(com.avyrodov.bugTracker.web.utils.UserPrincipalHolder).getUserId()}">
+                            <div class="row">
+                                <p><span th:text="#{comment.add}"></span>:</p>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-2">
+                                    <label for="status"><span th:text="#{issue.status}"></span>:</label>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="col-12">
+                                        <select class="form-select" th:field="${comment.status}">
+                                            <option th:value="${value.name()}" th:each="value : ${T(com.avyrodov.bugTracker.entity.Status).values()}" th:text="${#strings.capitalize(#strings.toLowerCase(value.name()))}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-md-2">
+                                    <label for="fullname_author"><span th:text="#{issue.author}"></span>:</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" id="fullname_author" th:value="${T(com.avyrodov.bugTracker.web.utils.UserPrincipalHolder).getUserFullname()}" class="form-control" readonly required/>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <label for="text" th:text="#{comment.text}"></label>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <textarea th:field="${comment.text}" class="form-control" type="text" required></textarea>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <input id="save" class="btn btn-success" th:value="#{button.add}" type="submit">
+                                    <a class="btn btn-outline-danger" th:href="@{/issue/issues.html}" th:text="#{button.cancel}"></a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer.html :: footer}"></footer>
+</body>
+</html>

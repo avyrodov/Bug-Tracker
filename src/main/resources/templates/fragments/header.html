@@ -1,0 +1,22 @@
+<head th:fragment="header (title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">Bug Tracker</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/sweetalert/sweetalert2.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/bootstrap/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/boxicons/css/boxicons.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/notice/notice.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/select2/select2.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/vendor/select2/select2-bootstrap5.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+
+    <script th:src="@{/vendor/jquery/jquery-3.7.0.min.js}"></script>
+    <script th:src="@{/vendor/bootstrap/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/vendor/sweetalert/sweetalert2.all.min.js}"></script>
+    <script th:src="@{/vendor/notice/notice.min.js}"></script>
+    <script th:src="@{/vendor/select2/select2.full.min.js}"></script>
+    <script th:src="@{/vendor/select2/select2-placeholder.js}"></script>
+
+    <script th:src="@{/js/loader.js}"></script>
+    <script th:src="@{/js/messages.js}"></script>
+</head>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header.html :: header(title='Bug Tracker - Issue Create')}"></head>
+
+<body class="d-flex flex-column h-100 color_sub_bg">
+<div th:replace="~{fragments/menu.html :: menu}"></div>
+
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="card">
+                <div class="card-header" th:text="#{issue.create}"></div>
+                <div class="card-body">
+                    <form id="issue" th:action="@{/issue/create.html}" th:object="${command}" method="post">
+                        <div class="row mb-2">
+                            <div class="col-md-2" th:text="#{issue.name}"></div>
+                            <div class="col-md-10">
+                                <input type="text" th:field="${command.name}" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''" class="form-control" required/>
+                                <div th:if="${#fields.hasErrors('name')}" th:errors="${command.name}" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label class="col-md-2" for="fullname_author" th:text="#{issue.author}"></label>
+                            <div class="col-md-4">
+                                <input type="hidden" name="author" th:value="${T(com.avyrodov.bugTracker.web.utils.UserPrincipalHolder).getUserId()}">
+                                <input type="text" id="fullname_author" th:value="${T(com.avyrodov.bugTracker.web.utils.UserPrincipalHolder).getUserFullname()}" class="form-control" readonly required/>
+                                <div th:if="${#fields.hasErrors('author')}" th:errors="${command.author}" class="invalid-feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label class="col-md-2" for="description" th:text="#{issue.description}"></label>
+                        </div>
+                        <div class="row mb-2">
+                            <textarea type="text" th:field="${command.description}" th:classappend="${#fields.hasErrors('author')} ? 'is-invalid' : ''" class="form-control" required></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <input id="save" class="btn btn-success" th:value="#{button.save}" type="submit">
+                                <a class="btn btn-outline-danger" th:href="@{/issue/issues.html}" th:text="#{button.cancel}"></a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer.html :: footer}"></footer>
+</body>
+</html>

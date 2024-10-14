@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header.html :: header(title='Bug Tracker - Issues')}"></head>
+
+<body class="d-flex flex-column h-100 color_sub_bg">
+<div th:replace="~{fragments/menu.html :: menu}"></div>
+
+<script>
+    function clearFormVisible(form) {
+        $(form)[0].reset();
+        $('#authorIds').val(null).trigger('change');
+        $('#authorCommentIds').val(null).trigger('change');
+    }
+
+    $(document).ready(function () {
+        $('#authorIds').select2({
+            width: '100%',
+            theme: "bootstrap-5",
+            searchInputPlaceholder: 'Search authors...',
+            placeholder: ''
+        })
+
+        $('#authorCommentIds').select2({
+            width: '100%',
+            theme: "bootstrap-5",
+            searchInputPlaceholder: 'Search author comments...',
+            placeholder: ''
+        })
+    })
+</script>
+
+<main>
+    <div class="container">
+        <div class="card color_bg mb-2">
+
+            <form th:action="@{/issue/issues.html}" th:object="${command}" method="post">
+                <div class="card-header initialism" th:text="#{filter}"></div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <label class="col-3 col-lg-4 col-md-3 col-form-label text-md-end">
+                            <span th:text="#{issue.name}"></span>:
+                        </label>
+                        <div class="col-9 col-lg-4 col-md-6">
+                            <input type="text" class="form-control color_bg color_headline" id="name"
+                                   th:field="${command.name}">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <label class="col-3 col-lg-4 col-md-3 col-form-label text-md-end">
+                            <span th:text="#{issue.status}"></span>:
+                        </label>
+                        <div class="col-9 col-lg-4 col-md-6">
+                            <select th:field="${command.status}" class="form-control">
+                                <option value=""></option>
+                                <option th:each="value : ${T(com.avyrodov.bugTracker.entity.Status).values()}"
+                                        th:value="${value.name()}"
+                                        th:text="${#strings.capitalize(#strings.toLowerCase(value.name()))}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <label class="col-3 col-lg-4 col-md-3 col-form-label text-md-end">
+                            <span th:text="#{issue.author}"></span>:
+                        </label>
+                        <div class="col-9 col-lg-4 col-md-6">
+                            <select th:field="${command.authorIds}" multiple="multiple">
+                                <option value=""></option>
+                                <option th:each="user : ${T(com.avyrodov.bugTracker.web.utils.UserUtils).getUsers()}"
+                                        th:value="${user.getUserId()}"
+                                        th:text="${user.getFullname()}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <label class="col-3 col-lg-4 col-md-3 col-form-label text-md-end">
+                            <span th:text="#{comment.author}"></span>:
+                        </label>
+                        <div class="col-9 col-lg-4 col-md-6">
+                            <select th:field="${command.authorCommentIds}" multiple="multiple">
+                                <option value=""></option>
+                                <option th:each="user : ${T(com.avyrodov.bugTracker.web.utils.UserUtils).getUsers()}"
+                                        th:value="${user.getUserId()}"
+                                        th:text="${user.getFullname()}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="offset-lg-4 offset-md-3 col-12 col-lg-4 col-md-6">
+                            <input class="btn btn-primary" th:value="#{button.search}" type="submit">
+                            <input class="btn btn-outline-danger" th:value="#{button.clear}" type="button"
+                                   onclick="clearFormVisible(this.form);">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="card">
+            <div class="card-header initialism" th:text="#{issueTracker}"></div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item message_not_found" th:if="${issues.size == 0}">
+                        <small class="text-muted">No issue</small>
+                    </li>
+                    <li class="list-group-item chat" th:each="issue, status : ${issues}">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a th:href="@{/issue/edit.html(issueId=${issue.issueId})}" th:text="${issue.name}"></a>
+                            </div>
+                            <div class="col-md-2" th:text="${issue.status.name()}"></div>
+                            <div class="col-md-4" th:text="${#temporals.format(issue.startDate, 'MM/dd/yyyy')}"></div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer.html :: footer}"></footer>
+</body>
+</html>
