@@ -12,7 +12,7 @@
             showNotice();
             let timer = waitingTimeExpired(30000);
 
-            let formData = new FormData(event.target);
+            let formData = new FormData(e.target);
             let obj = {};
             formData.forEach((value, key) => obj[key] = value);
 
@@ -22,8 +22,8 @@
                 notice.hideLoading();
                 stopTimer(timer);
                 $('#addComment')[0].reset();
-                let status = [[ ${#strings.capitalize(#strings.toLowerCase(command.status.name()))}]];
-                $('#issue_status').html(status)
+
+                updateStatus();
 
                 $('.trash').on('click', function () {
                     deleteComment(this);
@@ -48,12 +48,34 @@
             $('#comments').load(url, obj, function () {
                 notice.hideLoading();
                 stopTimer(timer);
-                let status = [[ ${#strings.capitalize(#strings.toLowerCase(command.status.name()))}]];
-                $('#issue_status').html(status)
+
+                updateStatus();
 
                 $('.trash').on('click', function () {
                     deleteComment(this);
                 })
+            });
+        }
+
+        function updateStatus() {
+            const issueId = Number($('#issueId').val());
+
+            $.ajax({
+                url: `/issue/${issueId}/status`,
+                method: 'get',
+                contentType: 'application/json',
+                statusCode: {
+                    200: function (status) {
+                        const lowerCase = status.toLowerCase();
+                        $('#issue_status').text(lowerCase.charAt(0).toUpperCase() + lowerCase.slice(1));
+                    },
+                    400: function (xhr) {
+                        console.log("Bad request")
+                    },
+                    500: function (xhr) {
+                        console.log("Error update status")
+                    }
+                }
             });
         }
     })

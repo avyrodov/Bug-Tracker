@@ -1,6 +1,7 @@
 package com.avyrodov.bugTracker.service;
 
 import com.avyrodov.bugTracker.entity.Issue;
+import com.avyrodov.bugTracker.entity.Status;
 import com.avyrodov.bugTracker.web.issue.IssueForm;
 
 import java.util.List;
@@ -19,4 +20,6 @@ public interface IIssueService {
     Issue save(Issue issue);
 
     void delete(Issue issue);
+
+    Status getStatus(Integer issueId);
 }

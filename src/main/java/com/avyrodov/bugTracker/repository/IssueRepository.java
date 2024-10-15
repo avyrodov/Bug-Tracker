@@ -1,6 +1,7 @@
 package com.avyrodov.bugTracker.repository;
 
 import com.avyrodov.bugTracker.entity.Issue;
+import com.avyrodov.bugTracker.entity.Status;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -32,4 +33,7 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
     void deleteByIds(List<Long> ids);
 
     Issue save(Issue Issue);
+
+    @Query(value = "SELECT status FROM issue WHERE issue_id = :issueId", nativeQuery = true)
+    Status getStatus(Integer issueId);
 }

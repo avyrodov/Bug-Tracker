@@ -1,6 +1,7 @@
 package com.avyrodov.bugTracker.service;
 
 import com.avyrodov.bugTracker.entity.Issue;
+import com.avyrodov.bugTracker.entity.Status;
 import com.avyrodov.bugTracker.repository.IssueRepository;
 import com.avyrodov.bugTracker.web.issue.IssueForm;
 import org.springframework.stereotype.Service;
@@ -51,6 +52,11 @@ public class IssueService implements IIssueService {
     @Override
     public void delete(Issue issue) {
         issueRepository.delete(issue);
+    }
+
+    @Override
+    public Status getStatus(Integer issueId) {
+        return issueRepository.getStatus(issueId);
     }
 }
 
