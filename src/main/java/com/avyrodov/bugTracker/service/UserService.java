@@ -34,7 +34,7 @@ public class UserService implements IUserService {
     @Override
     public User save(RegistrationForm form) {
         String role = "ROLE_USER";
-        Role userRole = roleRepository.getRoleByName(role).orElseThrow(() -> new NoSuchElementException("Role not present"));
+        Role userRole = roleRepository.getRoleByName(role).orElseGet(() -> roleRepository.save(new Role(role)));
 
         User user = new User();
         user.setFirstname(form.getFirstname());

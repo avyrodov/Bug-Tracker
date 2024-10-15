@@ -33,9 +33,6 @@ footer {
 }
 
 .trash {
-    position: absolute;
-    top: 12px;
-    right: 12px;
     cursor: pointer;
     color: var(--bs-secondary);
     transition: .5s;
@@ -44,8 +41,4 @@ footer {
 .trash:hover {
     color: var(--bs-dark);
     transition: .5s;
-}
-
-.list-group-item {
-    position: relative;
 }

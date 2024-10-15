@@ -98,9 +98,7 @@
 <div class="wrap-login">
     <div class="form-signin card text-bg-light w-100 m-auto">
         <row sec:authorize="isAuthenticated()">
-            <div class="alert alert-success" role="alert">
-                You have logged in
-            </div>
+            <div class="alert alert-success" role="alert" th:text="#{error.youHaveLoggedIn}"></div>
         </row>
         <div class="row mb-2" sec:authorize="!isAuthenticated()">
             <div class="col-12 text-center" th:text="#{signup}"></div>
@@ -108,28 +106,27 @@
         <form id="loginForm" th:action="@{/auth/registration.html}" th:object="${command}" method="post" sec:authorize="!isAuthenticated()">
             <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert"></div>
             <div class="form-floating">
-                <input type="text" class="form-control" th:field="${command.firstname}" placeholder="First Name">
-                <label th:for="firstname">First Name</label>
+                <input type="text" class="form-control" th:field="${command.firstname}" th:placeholder="#{user.firstName}">
+                <label th:for="firstname" th:text="#{user.firstName}"></label>
             </div>
             <div class="form-floating">
-                <input type="text" class="form-control" th:field="${command.surname}" placeholder="Surname">
-                <label th:for="surname">Surname</label>
+                <input type="text" class="form-control" th:field="${command.surname}" th:placeholder="#{user.surname}">
+                <label th:for="surname" th:text="#{user.surname}"></label>
             </div>
             <div class="form-floating">
-                <input type="text" class="form-control" th:field="${command.username}" placeholder="Username">
-                <label th:for="username">Username</label>
+                <input type="text" class="form-control" th:field="${command.username}" th:placeholder="#{user.username}">
+                <label th:for="username" th:text="#{user.username}"></label>
             </div>
             <div class="input-group mb-2">
                 <div class="form-floating">
-                    <input type="password" class="form-control mb-2" th:field="${command.password}" placeholder="Password">
-                    <label th:for="password">Password</label>
+                    <input type="password" class="form-control mb-2" th:field="${command.password}" th:placeholder="#{user.password}">
+                    <label th:for="password" th:text="#{user.password}"></label>
                 </div>
                 <div class="input-group-text pt-1 pb-1 ps-2 pe-2 toggle">
                     <i class="bx bx-show-alt bx-hide togglePassword" role="button" data-parent="password"></i>
                 </div>
             </div>
-
-            <button class="btn btn-primary" type="submit">Login</button>
+            <button class="btn btn-primary" type="submit" th:text="#{button.login}"></button>
         </form>
     </div>
 </div>

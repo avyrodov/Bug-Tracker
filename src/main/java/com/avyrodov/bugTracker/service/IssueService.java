@@ -47,5 +47,10 @@ public class IssueService implements IIssueService {
     public Issue save(Issue issue) {
         return issueRepository.save(issue);
     }
+
+    @Override
+    public void delete(Issue issue) {
+        issueRepository.delete(issue);
+    }
 }
 

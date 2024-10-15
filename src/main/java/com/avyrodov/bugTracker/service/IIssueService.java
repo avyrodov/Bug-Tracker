@@ -17,4 +17,6 @@ public interface IIssueService {
     void deleteByIds(List<Long> ids);
 
     Issue save(Issue issue);
+
+    void delete(Issue issue);
 }

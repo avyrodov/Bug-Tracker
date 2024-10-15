@@ -10,8 +10,7 @@
                 </li>
                 <li class="list-group-item" th:each="comment, status : ${command.comments}">
                     <div class="row">
-                        <p>Update by <span th:text="${comment.author.getFullname()}"></span> <span
-                                th:text="${#temporals.format(comment.updateDate, 'MM/dd/yyyy HH:MM')}"></span>:<br>
+                        <p>Update by <span th:text="${comment.author.getFullname()}"></span> <span th:text="${#temporals.format(comment.updateDate, 'MM/dd/yyyy HH:MM')}"></span>:<br>
                             <i>Status changed to <span th:text="${comment.status.name()}"></span> </i><br>
                             <span th:text="${comment.text}"></span>
                         </p>

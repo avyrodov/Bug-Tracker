@@ -11,10 +11,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequestMapping("issue")
 public class IssueEditController {
     private final IIssueService issueService;
     private final ICommentService commentService;
@@ -37,7 +37,7 @@ public class IssueEditController {
         return issue;
     }
 
-    @RequestMapping(value = "/issue/edit.html")
+    @RequestMapping(value = "/edit.html")
     public String showForm(@ModelAttribute("command") Issue issue, Model model, BindingResult bindingResult) {
         if (issue.getIssueId() == null)
             return "redirect:/issue/create.html";
@@ -48,7 +48,17 @@ public class IssueEditController {
         return "issue/edit";
     }
 
-    @PostMapping("/issue/comment/add")
+    @GetMapping(value = "/delete")
+    public String delete(@RequestParam(required = false) Long issueId, Model model) {
+        if (issueId != null) {
+            Issue issue = issueService.getIssue(issueId);
+            issueService.delete(issue);
+        }
+
+        return "redirect:/issue/issues.html";
+    }
+
+    @PostMapping("/comment/add")
     public String addComment(Comment comment, Model model) {
         if (comment != null) {
             comment.setUpdateDate(LocalDateTime.now());
@@ -66,7 +76,7 @@ public class IssueEditController {
         return "issue/block/comments :: comments";
     }
 
-    @PostMapping("/issue/comment/delete")
+    @PostMapping("/comment/delete")
     public String deleteComment(@RequestParam(required = false) Long issueId,
                                 @RequestParam(required = false) Long commentId,
                                 Model model) {

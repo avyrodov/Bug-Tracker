@@ -26,13 +26,78 @@
             searchInputPlaceholder: 'Search author comments...',
             placeholder: ''
         })
+
+        $('.trash').on('click', function (event) {
+            event.preventDefault();
+            let url = $(this).attr('href');
+            deleteIssue(url);
+        });
+
+        function deleteIssue(url) {
+            Swal.fire({
+                title: '',
+                text: 'Are you sure you want to delete the selected records?',
+                icon: 'warning',
+                showCancelButton: true
+            }).then(function (result) {
+                if (result.isConfirmed) {
+                    showNotice('Deleting...');
+                    let timer = waitingTimeExpired(30000);
+                    $.ajax({
+                        url: url,
+                        method: 'get',
+                        contentType: 'application/json',
+                        statusCode: {
+                            200: function (xhr) {
+                                notice.hideLoading();
+                                stopTimer(timer);
+                                Swal.fire({
+                                    title: 'Records has been deleted.',
+                                    text: '',
+                                    icon: 'success',
+                                    showConfirmButton: false,
+                                    timer: 1000
+                                }).then(function () {
+                                    window.location.href = '/issue/issues.html';
+                                });
+                            },
+                            400: function (xhr) {
+                                notice.hideLoading();
+                                stopTimer(timer);
+                                Swal.fire({
+                                    title: '',
+                                    text: xhr.responseText,
+                                    icon: 'error',
+                                });
+                            },
+                            500: function (xhr) {
+                                notice.hideLoading();
+                                stopTimer(timer);
+                                Swal.fire({
+                                    title: '',
+                                    text: '',
+                                    icon: 'error',
+                                });
+                            }
+                        }
+                    });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    Swal.fire({
+                        title: 'Cancelled',
+                        text: '',
+                        icon: 'error',
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                }
+            });
+        }
     })
 </script>
 
 <main>
     <div class="container">
         <div class="card color_bg mb-2">
-
             <form th:action="@{/issue/issues.html}" th:object="${command}" method="post">
                 <div class="card-header initialism" th:text="#{filter}"></div>
                 <div class="card-body">
@@ -41,8 +106,7 @@
                             <span th:text="#{issue.name}"></span>:
                         </label>
                         <div class="col-9 col-lg-4 col-md-6">
-                            <input type="text" class="form-control color_bg color_headline" id="name"
-                                   th:field="${command.name}">
+                            <input type="text" class="form-control color_bg color_headline" id="name" th:field="${command.name}">
                         </div>
                     </div>
                     <div class="row mb-2">
@@ -87,8 +151,7 @@
                     <div class="row mb-2">
                         <div class="offset-lg-4 offset-md-3 col-12 col-lg-4 col-md-6">
                             <input class="btn btn-primary" th:value="#{button.search}" type="submit">
-                            <input class="btn btn-outline-danger" th:value="#{button.clear}" type="button"
-                                   onclick="clearFormVisible(this.form);">
+                            <input class="btn btn-outline-danger" th:value="#{button.clear}" type="button" onclick="clearFormVisible(this.form);">
                         </div>
                     </div>
                 </div>
@@ -97,20 +160,27 @@
         <div class="card">
             <div class="card-header initialism" th:text="#{issueTracker}"></div>
             <div class="card-body">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item message_not_found" th:if="${issues.size == 0}">
-                        <small class="text-muted">No issue</small>
-                    </li>
-                    <li class="list-group-item chat" th:each="issue, status : ${issues}">
-                        <div class="row">
-                            <div class="col-md-6">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <tbody>
+                        <tr th:if="${issues.size == 0}">
+                            <td class="text-center">
+                                <small class="text-muted">No issue</small>
+                            </td>
+                        </tr>
+                        <tr th:each="issue, status : ${issues}">
+                            <td>
                                 <a th:href="@{/issue/edit.html(issueId=${issue.issueId})}" th:text="${issue.name}"></a>
-                            </div>
-                            <div class="col-md-2" th:text="${issue.status.name()}"></div>
-                            <div class="col-md-4" th:text="${#temporals.format(issue.startDate, 'MM/dd/yyyy')}"></div>
-                        </div>
-                    </li>
-                </ul>
+                            </td>
+                            <td style="width: 120px;" th:text="${issue.status.name()}"></td>
+                            <td style="width: 120px;" th:text="${#temporals.format(issue.startDate, 'MM/dd/yyyy')}"></td>
+                            <td style="width: 50px;">
+                                <a th:href="@{/issue/delete(issueId=${issue.issueId})}" class="trash"><i class='bx bxs-trash-alt trash'></i></a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

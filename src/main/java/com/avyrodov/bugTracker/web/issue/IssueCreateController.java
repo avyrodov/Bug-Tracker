@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 
 @Controller
+@RequestMapping("issue")
 public class IssueCreateController {
     private final IIssueService issueService;
     private final ICommentService commentService;
@@ -27,7 +28,7 @@ public class IssueCreateController {
         return new Issue();
     }
 
-    @RequestMapping(value = "/issue/create.html")
+    @GetMapping(value = "/create.html")
     public String showForm(@ModelAttribute("command") Issue issue, Model model, BindingResult bindingResult) {
         if (issue != null) {
             model.addAttribute("comments", commentService.getComments(issue.getIssueId()));
@@ -39,8 +40,8 @@ public class IssueCreateController {
         }
     }
 
-    @RequestMapping(value = "/issue/create.html", method = RequestMethod.POST, params = "!_cancel")
-    public String onSubmit(@Valid @ModelAttribute("command") Issue issue, Model model, BindingResult bindingResult) {
+    @PostMapping(value = "/create.html")
+    public String create(@Valid @ModelAttribute("command") Issue issue, Model model, BindingResult bindingResult) {
         if (issue != null) {
             if (bindingResult.hasErrors())
                 return showForm(issue, model, bindingResult);
@@ -52,11 +53,6 @@ public class IssueCreateController {
             issueService.save(issue);
         }
 
-        return "redirect:/issue/issues.html";
-    }
-
-    @RequestMapping(value = "/issue/create.html", method = RequestMethod.POST, params = "_cancel")
-    public String onCancel(@ModelAttribute("command") Issue issue) {
         return "redirect:/issue/issues.html";
     }
 }
